@@ -1,0 +1,19 @@
+{
+  "name": "phonebook_backend",
+  "version": "0.0.1",
+  "description": "Dedicated repository for the exercises of part 3 of Full Stack Open course from University of Helsinki.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: No test specified\" && exit 1"
+  },
+  "author": "Marcelo Fantini",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
