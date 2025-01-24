@@ -62,8 +62,8 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  const name = request.params.name
-  const nameExists = persons.filter(person => person.name === name)
+  const name = request.body.name
+  const nameExists = persons.find(person => person.name === name)
 
   if (!body.name || !body.number) {
     return response.status(400).json({
@@ -86,7 +86,9 @@ app.post('/api/persons', (request, response) => {
   response.json(person)
 })
 
-app.use(morgan(':method :url :status'))
+app.use(morgan.token('type', (request, response) => {
+  return request.headers['content-type']
+}))
 
 const PORT = 3001
 app.listen(PORT, () => {
