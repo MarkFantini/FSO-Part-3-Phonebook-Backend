@@ -65,7 +65,10 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
   const id = request.params.id
+  console.log('ID to be deleted: ', id)
   persons = persons.filter(person => person.id !== id)
+  console.log('Persons after deletion')
+  console.log(persons)
 
   response.status(204).end()
 })
