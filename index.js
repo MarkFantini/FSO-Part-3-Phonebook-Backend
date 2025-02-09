@@ -99,6 +99,29 @@ app.post('/api/persons', (request, response) => {
   response.json(person)
 })
 
+app.put('/api/persons/:id', (request, response) => {
+  const body = request.body
+  const name = body.name
+  const newNumber = body.number
+  const id = request.params.id
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      error: 'name or number missing'
+    })
+  }
+
+  const updatedPerson = {
+    id: id,
+    name: name,
+    number: newNumber
+  }
+
+  persons = persons.map(person => person.id === id ? updatedPerson : person)
+
+  response.json(updatedPerson)
+})
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
