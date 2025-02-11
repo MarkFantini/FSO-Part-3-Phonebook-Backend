@@ -40,10 +40,13 @@ let persons = [
   }
 ]
 
-
 app.get('/', (request, response) => {
+  const totalPeople = Person.find({}).then(result => {
+    response.json(result)
+  })
+
   const currentDate = new Date()
-  const message = `<p>Phonebook has info for ${persons.length} people</p><p>${currentDate.toString()}</p>`
+  const message = `<p>Phonebook has info for ${totalPeople.length} people</p><p>${currentDate.toString()}</p>`
   
   response.send(message)
 })
@@ -72,7 +75,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   // const body = request.body
   // const name = request.body.name
   // const nameExists = persons.find(person => person.name === name)
@@ -100,47 +103,32 @@ app.post('/api/persons', (request, response) => {
 
   if (!body.name || !body.number) { 
     return response.status(400).json({
-      error: 'content missing'
+      error: 'name or number missing'
     })
   }
 
-  Person.find({ name: body.name }).then(result => {
-    response.json({ error: 'name must be unique' })
-  })
+  Person.findOne({ name: body.name })
+    .then(existingPerson => {
+      if (existingPerson) {
+        return response.status(400).json({ error: 'name must be unique' })
+      }
+      
+      const person = new Person({
+        name: body.name,
+        number: body.number,
+      })
 
-  const newPerson = new Person({
-    name: body.name,
-    number: body.number,
-  })
-
-  newPerson.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+      return person.save()
+    })
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 
 
-app.put('/api/persons/:id', (request, response) => {
-  // const body = request.body
-  // const name = body.name
-  // const newNumber = body.number
-  // const id = request.params.id
-
-  // if (!body.name || !body.number) {
-  //   return response.status(400).json({
-  //     error: 'name or number missing'
-  //   })
-  // }
-
-  // const updatedPerson = {
-  //   id: id,
-  //   name: name,
-  //   number: newNumber
-  // }
-
-  // persons = persons.map(person => person.id === id ? updatedPerson : person)
-
-  // response.json(updatedPerson)
+app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
 
   const person = {
