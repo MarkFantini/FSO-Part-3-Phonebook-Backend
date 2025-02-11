@@ -98,7 +98,7 @@ app.post('/api/persons', (request, response) => {
   // response.json(person)
   const body = request.body
 
-  if (body.name === undefined || body.number === undefined) { 
+  if (!body.name || !body.number) { 
     return response.status(400).json({
       error: 'content missing'
     })
@@ -121,38 +121,49 @@ app.post('/api/persons', (request, response) => {
 
 
 app.put('/api/persons/:id', (request, response) => {
-  const body = request.body
-  const name = body.name
-  const newNumber = body.number
-  const id = request.params.id
+  // const body = request.body
+  // const name = body.name
+  // const newNumber = body.number
+  // const id = request.params.id
 
-  if (!body.name || !body.number) {
+  // if (!body.name || !body.number) {
+  //   return response.status(400).json({
+  //     error: 'name or number missing'
+  //   })
+  // }
+
+  // const updatedPerson = {
+  //   id: id,
+  //   name: name,
+  //   number: newNumber
+  // }
+
+  // persons = persons.map(person => person.id === id ? updatedPerson : person)
+
+  // response.json(updatedPerson)
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  if (!body.name || !body.number) { 
     return response.status(400).json({
       error: 'name or number missing'
     })
   }
 
-  const updatedPerson = {
-    id: id,
-    name: name,
-    number: newNumber
-  }
-
-  persons = persons.map(person => person.id === id ? updatedPerson : person)
-
-  response.json(updatedPerson)
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 
 
 app.delete('/api/persons/:id', (request, response) => {
-  // const id = request.params.id
-  // console.log('ID to be deleted: ', id)
-  // persons = persons.filter(person => person.id !== id)
-  // console.log('Persons after deletion')
-  // console.log(persons)
-
-  // response.status(204).end()
   Person.findByIdAndDelete(request.params.id)
     .then(result => {
       response.status(204).end()
