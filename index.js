@@ -1,12 +1,13 @@
 require('dotenv').config()
 const express = require('express')
-const morgan = require('morgan')
 const cors = require('cors')
+const morgan = require('morgan')
 const app = express()
+const Person = require('./models/phones')
 
-app.use(express.json())
 app.use(cors())
 app.use(express.static('dist'))
+app.use(express.json())
 
 morgan.token("body", (request) => JSON.stringify(request.body))
 
