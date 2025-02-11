@@ -73,29 +73,49 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 
 app.post('/api/persons', (request, response) => {
-  const body = request.body
-  const name = request.body.name
-  const nameExists = persons.find(person => person.name === name)
+  // const body = request.body
+  // const name = request.body.name
+  // const nameExists = persons.find(person => person.name === name)
 
-  if (!body.name || !body.number) {
+  // if (!body.name || !body.number) {
+  //   return response.status(400).json({
+  //     error: 'name or number missing'
+  //   })
+  // } else if (nameExists) {
+  //   return response.status(400).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
+
+  // const person = {
+  //   id: Math.floor(Math.random()*10000).toString(),
+  //   name: body.name,
+  //   number: body.number,
+  // }
+
+  // persons = persons.concat(person)
+
+  // response.json(person)
+  const body = request.body
+
+  if (body.name === undefined || body.number === undefined) { 
     return response.status(400).json({
-      error: 'name or number missing'
-    })
-  } else if (nameExists) {
-    return response.status(400).json({
-      error: 'name must be unique'
+      error: 'content missing'
     })
   }
 
-  const person = {
-    id: Math.floor(Math.random()*10000).toString(),
+  Person.find({ name: body.name }).then(result => {
+    response.json({ error: 'name must be unique' })
+  })
+
+  const newPerson = new Person({
     name: body.name,
     number: body.number,
-  }
+  })
 
-  persons = persons.concat(person)
-
-  response.json(person)
+  newPerson.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 })
 
 
@@ -126,13 +146,18 @@ app.put('/api/persons/:id', (request, response) => {
 
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  console.log('ID to be deleted: ', id)
-  persons = persons.filter(person => person.id !== id)
-  console.log('Persons after deletion')
-  console.log(persons)
+  // const id = request.params.id
+  // console.log('ID to be deleted: ', id)
+  // persons = persons.filter(person => person.id !== id)
+  // console.log('Persons after deletion')
+  // console.log(persons)
 
-  response.status(204).end()
+  // response.status(204).end()
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
