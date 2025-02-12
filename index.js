@@ -89,7 +89,7 @@ app.post('/api/persons', (request, response, next) => {
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
 
-  if (!body.name || !body.number) { 
+  if (!name || !number) { 
     return response.status(400).json({
       error: 'name or number missing'
     })
@@ -102,7 +102,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
-    .catch(error => next(error))
+    .catch(error => {
+      console.log(error)
+      next(error)
+    })
 })
 
 
@@ -129,7 +132,6 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id'})
   } else if (error.name === 'ValidationError') {
-    console.log(error.name)
     return response.status(400).send({ error: error.message })
   }
 
