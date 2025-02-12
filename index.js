@@ -76,29 +76,6 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 
 app.post('/api/persons', (request, response, next) => {
-  // const body = request.body
-  // const name = request.body.name
-  // const nameExists = persons.find(person => person.name === name)
-
-  // if (!body.name || !body.number) {
-  //   return response.status(400).json({
-  //     error: 'name or number missing'
-  //   })
-  // } else if (nameExists) {
-  //   return response.status(400).json({
-  //     error: 'name must be unique'
-  //   })
-  // }
-
-  // const person = {
-  //   id: Math.floor(Math.random()*10000).toString(),
-  //   name: body.name,
-  //   number: body.number,
-  // }
-
-  // persons = persons.concat(person)
-
-  // response.json(person)
   const body = request.body
 
   if (!body.name || !body.number) { 
